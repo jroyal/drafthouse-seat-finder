@@ -1,5 +1,7 @@
 package drafthouse
 
+import "github.com/jroyal/drafthouse-seat-finder/utils"
+
 type Market struct {
 	FeedGenerated     string `json:"FeedGenerated"`
 	SessionsGenerated string `json:"SessionsGenerated"`
@@ -10,11 +12,11 @@ type Market struct {
 }
 
 func (m *Market) MoviesShowingToday() []string {
-	var movies []string
+	movies := utils.NewStringSet()
 	today := m.Dates[0]
 
 	for _, cinema := range today.Cinemas {
-		movies = append(movies, cinema.GetFilmNames()...)
+		movies.AddSlice(cinema.GetFilmNames())
 	}
-	return movies
+	return movies.ToSlice()
 }

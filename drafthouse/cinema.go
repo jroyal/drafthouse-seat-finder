@@ -1,5 +1,7 @@
 package drafthouse
 
+import "github.com/jroyal/drafthouse-seat-finder/utils"
+
 type Cinema struct {
 	CinemaID          string `json:"CinemaId"`
 	CinemaName        string `json:"CinemaName"`
@@ -11,17 +13,9 @@ type Cinema struct {
 }
 
 func (c *Cinema) GetFilmNames() []string {
-	filmset := make(map[string]struct{})
+	filmset := utils.NewStringSet()
 	for i := 0; i < len(c.Films); i++ {
-		filmset[c.Films[i].FilmName] = struct{}{}
+		filmset.Add(c.Films[i].FilmName)
 	}
-
-	i := 0
-	films := make([]string, len(filmset))
-	for k := range filmset {
-		films[i] = k
-		i++
-	}
-
-	return films
+	return filmset.ToSlice()
 }
