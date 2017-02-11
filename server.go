@@ -12,8 +12,6 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Drafthouse Seat Finder")
 	})
-	e.GET("/moviesshowingtoday", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, drafthouse.GetMoviesShowingToday())
-	})
-	e.Logger.Fatal(e.Start(":8080"))
+	e.GET("/movies", drafthouse.HandleGetMovies)
+	e.Logger.Fatal(e.Start("localhost:8080"))
 }

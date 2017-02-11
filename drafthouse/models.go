@@ -8,12 +8,6 @@ type MarketResponse struct {
 	Market Market `json:"Market"`
 }
 
-type Date struct {
-	DateID  string   `json:"DateId"`
-	Date    string   `json:"Date"`
-	Cinemas []Cinema `json:"Cinemas"`
-}
-
 type Film struct {
 	FilmID        string   `json:"FilmId"`
 	FilmName      string   `json:"FilmName"`

@@ -4,9 +4,13 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var myClient = &http.Client{Timeout: 10 * time.Second}
+
+var market = MarketResponse{}
 
 func getJson(url string, target interface{}) error {
 	r, err := myClient.Get(url)
@@ -19,7 +23,10 @@ func getJson(url string, target interface{}) error {
 }
 
 func getMarketInfo() Market {
-	market := MarketResponse{}
-	getJson(austinMarketFeed, &market)
+	if market.Market.MarketID == "" {
+		log.WithField("market", "austin").Info("Getting Feed Information")
+		getJson(austinMarketFeed, &market)
+	}
+
 	return market.Market
 }
