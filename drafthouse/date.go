@@ -1,6 +1,7 @@
 package drafthouse
 
 import (
+	"strings"
 	"time"
 
 	"github.com/jroyal/drafthouse-seat-finder/utils"
@@ -21,10 +22,27 @@ func (d *Date) convertToTime() time.Time {
 	return date
 }
 
-func (d *Date) getMovies() []string {
+func (d *Date) getMovies(cinemaFilter string) []string {
 	movies := utils.NewStringSet()
-	for _, cinema := range d.Cinemas {
+	for _, cinema := range d.filterCinemas(cinemaFilter) {
 		movies.AddSlice(cinema.GetFilmNames())
 	}
 	return movies.ToSlice()
+}
+
+func (d *Date) filterCinemas(cinemaFilter string) []Cinema {
+	if cinemaFilter == "" {
+		return d.Cinemas
+	}
+
+	var results []Cinema
+	cinemas := strings.Split(cinemaFilter, ",")
+	filter := utils.NewStringSet()
+	filter.AddSlice(cinemas)
+	for _, cinema := range d.Cinemas {
+		if filter.Contains(cinema.CinemaSlug) {
+			results = append(results, cinema)
+		}
+	}
+	return results
 }

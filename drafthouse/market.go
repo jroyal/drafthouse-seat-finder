@@ -14,9 +14,9 @@ type Market struct {
 	Dates             []Date `json:"Dates"`
 }
 
-func (m *Market) Movies(date time.Time) []string {
+func (m *Market) Movies(date time.Time, cinemaFilter string) []string {
 	targetDay := m.getDate(date)
-	movies := targetDay.getMovies()
+	movies := targetDay.getMovies(cinemaFilter)
 	sort.Strings(movies)
 	return movies
 }

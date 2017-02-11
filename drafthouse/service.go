@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo"
+	log "github.com/sirupsen/logrus"
 )
 
 func HandleGetMovies(c echo.Context) error {
@@ -14,5 +15,14 @@ func HandleGetMovies(c echo.Context) error {
 		day = time.Now().Format(apiFormat)
 	}
 	dayFilter, _ := time.Parse(apiFormat, day)
-	return c.JSON(http.StatusOK, GetMovies(dayFilter))
+	cinemaFilter := c.QueryParam("cinema")
+	log.WithFields(log.Fields{
+		"path":      c.Path(),
+		"dayFilter": day,
+		"cinemas":   cinemaFilter,
+		"scheme":    c.Scheme(),
+		"method":    c.Request().Method,
+	}).Info("Request Received")
+
+	return c.JSON(http.StatusOK, GetMovies(dayFilter, cinemaFilter))
 }

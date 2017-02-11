@@ -1,7 +1,7 @@
 package utils
 
 type StringSet struct {
-	Elements map[string]struct{}
+	elements map[string]struct{}
 }
 
 func NewStringSet() *StringSet {
@@ -11,19 +11,24 @@ func NewStringSet() *StringSet {
 }
 
 func (s *StringSet) Add(elem string) {
-	s.Elements[elem] = struct{}{}
+	s.elements[elem] = struct{}{}
 }
 
 func (s *StringSet) AddSlice(elems []string) {
 	for _, elem := range elems {
-		s.Elements[elem] = struct{}{}
+		s.elements[elem] = struct{}{}
 	}
+}
+
+func (s *StringSet) Contains(elem string) bool {
+	_, exists := s.elements[elem]
+	return exists
 }
 
 func (s *StringSet) ToSlice() []string {
 	i := 0
-	elements := make([]string, len(s.Elements))
-	for k := range s.Elements {
+	elements := make([]string, len(s.elements))
+	for k := range s.elements {
 		elements[i] = k
 		i++
 	}

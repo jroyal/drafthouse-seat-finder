@@ -1,6 +1,6 @@
 package drafthouse
 
-type ResponseMoviesShowingToday struct {
+type ResponseMovies struct {
 	Movies []string `json:"movies"`
 }
 

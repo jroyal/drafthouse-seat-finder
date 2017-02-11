@@ -2,7 +2,7 @@ package drafthouse
 
 import "time"
 
-func GetMovies(dayFilter time.Time) ResponseMoviesShowingToday {
+func GetMovies(dayFilter time.Time, cinemaFilter string) ResponseMovies {
 	market := getMarketInfo()
-	return ResponseMoviesShowingToday{market.Movies(dayFilter)}
+	return ResponseMovies{market.Movies(dayFilter, cinemaFilter)}
 }
