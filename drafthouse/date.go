@@ -30,6 +30,17 @@ func (d *Date) getMovies(cinemaFilter string) []string {
 	return movies.ToSlice()
 }
 
+func (d *Date) GetFilmTimes(filmSlug string, cinemaFilter string) map[string][]string {
+	filmTimes := map[string][]string{}
+	for _, cinema := range d.filterCinemas(cinemaFilter) {
+		times := cinema.GetFilmTimes(filmSlug)
+		if times != nil {
+			filmTimes[cinema.CinemaName] = times
+		}
+	}
+	return filmTimes
+}
+
 func (d *Date) filterCinemas(cinemaFilter string) []Cinema {
 	if cinemaFilter == "" {
 		return d.Cinemas

@@ -19,3 +19,14 @@ func (c *Cinema) GetFilmNames() []string {
 	}
 	return filmset.ToSlice()
 }
+
+func (c *Cinema) GetFilmTimes(filmSlug string) []string {
+	var filmTimes []string
+	for _, film := range c.Films {
+		if film.FilmSlug == filmSlug {
+			filmTimes = film.GetFilmTimes()
+			break
+		}
+	}
+	return filmTimes
+}

@@ -23,6 +23,30 @@ func HandleGetMovies(c echo.Context) error {
 		"scheme":    c.Scheme(),
 		"method":    c.Request().Method,
 	}).Info("Request Received")
+	market := getMarketInfo()
+	response := ResponseMovies{market.Movies(dayFilter, cinemaFilter)}
+	return c.JSON(http.StatusOK, response)
+}
 
-	return c.JSON(http.StatusOK, GetMovies(dayFilter, cinemaFilter))
+func HandleGetSingleMovie(c echo.Context) error {
+
+	filmSlug := c.Param("film-slug")
+
+	day := c.QueryParam("day")
+	if day == "" {
+		day = time.Now().Format(apiFormat)
+	}
+	dayFilter, _ := time.Parse(apiFormat, day)
+	cinemaFilter := c.QueryParam("cinema")
+	log.WithFields(log.Fields{
+		"film":      filmSlug,
+		"path":      c.Path(),
+		"dayFilter": day,
+		"cinemas":   cinemaFilter,
+		"scheme":    c.Scheme(),
+		"method":    c.Request().Method,
+	}).Info("Request Received")
+	market := getMarketInfo()
+	response := ResponseMovieTimes{market.GetFilmTimes(filmSlug, dayFilter, cinemaFilter)}
+	return c.JSON(http.StatusOK, response)
 }

@@ -13,5 +13,6 @@ func main() {
 		return c.String(http.StatusOK, "Drafthouse Seat Finder")
 	})
 	e.GET("/movies", drafthouse.HandleGetMovies)
+	e.GET("/movies/:film-slug", drafthouse.HandleGetSingleMovie)
 	e.Logger.Fatal(e.Start("localhost:8080"))
 }

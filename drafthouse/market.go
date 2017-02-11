@@ -21,6 +21,12 @@ func (m *Market) Movies(date time.Time, cinemaFilter string) []string {
 	return movies
 }
 
+func (m *Market) GetFilmTimes(filmSlug string, date time.Time, cinemaFilter string) map[string][]string {
+	targetDay := m.getDate(date)
+	filmTimes := targetDay.GetFilmTimes(filmSlug, cinemaFilter)
+	return filmTimes
+}
+
 func (m *Market) getDate(day time.Time) Date {
 	for _, date := range m.Dates {
 		if date.convertToTime() == day {
