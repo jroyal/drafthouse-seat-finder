@@ -30,5 +30,5 @@ func main() {
 
 	e.GET("/movies", drafthouse.HandleGetMovies)
 	e.GET("/movies/:film-slug", drafthouse.HandleGetSingleMovie)
-	e.Logger.Fatal(e.Start("localhost:8080"))
+	e.Logger.Fatal(e.Start(":8080"))
 }
