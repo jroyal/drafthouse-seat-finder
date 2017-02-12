@@ -2,11 +2,58 @@ package drafthouse
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"
 )
+
+func HandleIndex(c echo.Context) error {
+	market := getMarketInfo()
+
+	dayFilter, _ := time.Parse(apiFormat, time.Now().Format(apiFormat))
+	cinemaFilter := ""
+	indexTemplate := IndexTemplate{
+		Dates:   market.GetDates(),
+		Films:   market.GetSimpleFilms(dayFilter, cinemaFilter),
+		Cinemas: market.GetCinemas(),
+	}
+	log.WithFields(log.Fields{
+		"path":   c.Path(),
+		"scheme": c.Scheme(),
+		"method": c.Request().Method,
+	}).Info("Request Received")
+
+	return c.Render(http.StatusOK, "index", indexTemplate)
+}
+
+func HandleSeats(c echo.Context) error {
+	req := c.Request()
+	req.ParseForm()
+	form := req.Form
+
+	cinemas := form["cinemas"]
+	film := c.FormValue("film")
+	date := c.FormValue("date")
+	dayFilter, _ := time.Parse(dateFormat, date)
+	cinemaFilter := strings.Join(cinemas, ",")
+	log.WithFields(log.Fields{
+		"path":    c.Path(),
+		"scheme":  c.Scheme(),
+		"method":  c.Request().Method,
+		"cinemas": cinemaFilter,
+		"film":    film,
+		"date":    dayFilter,
+	}).Info("Request Recieved")
+
+	market := getMarketInfo()
+	seatTemplate := SeatPickerTemplate{
+		Films: market.GetFilmSessions(film, dayFilter, cinemaFilter),
+	}
+
+	return c.Render(http.StatusOK, "seats", seatTemplate)
+}
 
 func HandleGetMovies(c echo.Context) error {
 
@@ -24,7 +71,7 @@ func HandleGetMovies(c echo.Context) error {
 		"method":    c.Request().Method,
 	}).Info("Request Received")
 	market := getMarketInfo()
-	response := ResponseMovies{market.Movies(dayFilter, cinemaFilter)}
+	response := ResponseMovies{market.GetFilmNames(dayFilter, cinemaFilter)}
 	return c.JSON(http.StatusOK, response)
 }
 

@@ -12,12 +12,28 @@ type Cinema struct {
 	Films             []Film `json:"Films"`
 }
 
+type SimpleCinema struct {
+	CinemaName string
+	CinemaSlug string
+}
+
 func (c *Cinema) GetFilmNames() []string {
 	filmset := utils.NewStringSet()
 	for i := 0; i < len(c.Films); i++ {
 		filmset.Add(c.Films[i].FilmName)
 	}
 	return filmset.ToSlice()
+}
+
+func (c *Cinema) GetFilms() []SimpleFilm {
+	filmset := make([]SimpleFilm, len(c.Films))
+	for i, film := range c.Films {
+		filmset[i] = SimpleFilm{
+			FilmName: film.FilmName,
+			FilmSlug: film.FilmSlug,
+		}
+	}
+	return filmset
 }
 
 func (c *Cinema) GetFilmTimes(filmSlug string) []string {
@@ -29,4 +45,21 @@ func (c *Cinema) GetFilmTimes(filmSlug string) []string {
 		}
 	}
 	return filmTimes
+}
+
+func (c *Cinema) GetFilmSessions(filmSlug string) []FilmSession {
+	var filmSessions []FilmSession
+	for _, film := range c.Films {
+		if film.FilmSlug == filmSlug {
+			filmSessions = film.GetFilmSessions()
+			break
+		}
+	}
+
+	for i := 0; i < len(filmSessions); i++ {
+		film := &filmSessions[i]
+		film.CinemaID = c.CinemaID
+		film.CinemaName = c.CinemaName
+	}
+	return filmSessions
 }

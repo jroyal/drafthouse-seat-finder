@@ -3,7 +3,6 @@ package main
 import (
 	"html/template"
 	"io"
-	"net/http"
 
 	"github.com/jroyal/drafthouse-seat-finder/drafthouse"
 	"github.com/labstack/echo"
@@ -25,9 +24,9 @@ func main() {
 	}
 	e.Renderer = t
 
-	e.GET("/", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "index", "World")
-	})
+	e.GET("/", drafthouse.HandleIndex)
+
+	e.POST("/seats", drafthouse.HandleSeats)
 
 	e.GET("/movies", drafthouse.HandleGetMovies)
 	e.GET("/movies/:film-slug", drafthouse.HandleGetSingleMovie)

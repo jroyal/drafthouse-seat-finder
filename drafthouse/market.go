@@ -14,9 +14,16 @@ type Market struct {
 	Dates             []Date `json:"Dates"`
 }
 
-func (m *Market) Movies(date time.Time, cinemaFilter string) []string {
+func (m *Market) GetSimpleFilms(date time.Time, cinemaFilter string) []SimpleFilm {
 	targetDay := m.getDate(date)
-	movies := targetDay.getMovies(cinemaFilter)
+	films := targetDay.GetFilms(cinemaFilter)
+	sort.Sort(films)
+	return films
+}
+
+func (m *Market) GetFilmNames(date time.Time, cinemaFilter string) []string {
+	targetDay := m.getDate(date)
+	movies := targetDay.GetFilmNames(cinemaFilter)
 	sort.Strings(movies)
 	return movies
 }
@@ -25,6 +32,26 @@ func (m *Market) GetFilmTimes(filmSlug string, date time.Time, cinemaFilter stri
 	targetDay := m.getDate(date)
 	filmTimes := targetDay.GetFilmTimes(filmSlug, cinemaFilter)
 	return filmTimes
+}
+
+func (m *Market) GetFilmSessions(filmSlug string, date time.Time, cinemaFilter string) []FilmSession {
+	targetDay := m.getDate(date)
+	filmSessions := targetDay.GetFilmSessions(filmSlug, cinemaFilter)
+	return filmSessions
+}
+
+func (m *Market) GetCinemas() []SimpleCinema {
+	// I choose the next day to make sure we get all theaters
+	date := m.Dates[1]
+	return date.GetCinemas()
+}
+
+func (m *Market) GetDates() []string {
+	var dates []string
+	for _, date := range m.Dates {
+		dates = append(dates, date.Date)
+	}
+	return dates
 }
 
 func (m *Market) getDate(day time.Time) Date {

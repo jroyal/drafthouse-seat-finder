@@ -22,7 +22,7 @@ func (d *Date) convertToTime() time.Time {
 	return date
 }
 
-func (d *Date) getMovies(cinemaFilter string) []string {
+func (d *Date) GetFilmNames(cinemaFilter string) []string {
 	movies := utils.NewStringSet()
 	for _, cinema := range d.filterCinemas(cinemaFilter) {
 		movies.AddSlice(cinema.GetFilmNames())
@@ -39,6 +39,41 @@ func (d *Date) GetFilmTimes(filmSlug string, cinemaFilter string) map[string][]s
 		}
 	}
 	return filmTimes
+}
+
+func (d *Date) GetCinemas() []SimpleCinema {
+	var cinemas []SimpleCinema
+
+	for _, cinema := range d.Cinemas {
+		cinemas = append(cinemas, SimpleCinema{
+			CinemaName: cinema.CinemaName,
+			CinemaSlug: cinema.CinemaSlug,
+		})
+	}
+	return cinemas
+}
+
+func (d *Date) GetFilms(cinemaFilter string) SimpleFilms {
+	var filmResult []SimpleFilm
+	filmSet := utils.NewStringSet()
+	for _, cinema := range d.filterCinemas(cinemaFilter) {
+		films := cinema.GetFilms()
+		for _, film := range films {
+			if !filmSet.Contains(film.FilmName) {
+				filmSet.Add(film.FilmName)
+				filmResult = append(filmResult, film)
+			}
+		}
+	}
+	return filmResult
+}
+
+func (d *Date) GetFilmSessions(filmSlug string, cinemaFilter string) []FilmSession {
+	var filmSessions []FilmSession
+	for _, cinema := range d.filterCinemas(cinemaFilter) {
+		filmSessions = append(filmSessions, cinema.GetFilmSessions(filmSlug)...)
+	}
+	return filmSessions
 }
 
 func (d *Date) filterCinemas(cinemaFilter string) []Cinema {

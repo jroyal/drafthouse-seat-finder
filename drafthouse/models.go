@@ -11,3 +11,13 @@ type ResponseMovieTimes struct {
 type MarketResponse struct {
 	Market Market `json:"Market"`
 }
+
+type IndexTemplate struct {
+	Dates   []string
+	Films   []SimpleFilm
+	Cinemas []SimpleCinema
+}
+
+type SeatPickerTemplate struct {
+	Films []FilmSession
+}

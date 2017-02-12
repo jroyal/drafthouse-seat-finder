@@ -11,6 +11,33 @@ type Film struct {
 	Series        []Series `json:"Series"`
 }
 
+type SimpleFilm struct {
+	FilmName string
+	FilmSlug string
+}
+
+type SimpleFilms []SimpleFilm
+
+func (slice SimpleFilms) Len() int {
+	return len(slice)
+}
+
+func (slice SimpleFilms) Less(i, j int) bool {
+	return slice[i].FilmName < slice[j].FilmName
+}
+
+func (slice SimpleFilms) Swap(i, j int) {
+	slice[i], slice[j] = slice[j], slice[i]
+}
+
+type FilmSession struct {
+	CinemaID    string
+	CinemaName  string
+	FilmName    string
+	SessionTime string
+	SessionID   string
+}
+
 type Series struct {
 	SeriesID   string   `json:"SeriesId"`
 	SeriesName string   `json:"SeriesName"`
@@ -45,4 +72,20 @@ func (f *Film) GetFilmTimes() []string {
 		}
 	}
 	return filmTimes
+}
+
+func (f *Film) GetFilmSessions() []FilmSession {
+	var filmSessions []FilmSession
+	for _, series := range f.Series {
+		for _, format := range series.Formats {
+			for _, session := range format.Sessions {
+				filmSessions = append(filmSessions, FilmSession{
+					FilmName:    f.FilmName,
+					SessionTime: session.SessionTime,
+					SessionID:   session.SessionID,
+				})
+			}
+		}
+	}
+	return filmSessions
 }
