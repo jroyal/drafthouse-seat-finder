@@ -9,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// HandleIndex is the handler for GET /
 func HandleIndex(c echo.Context) error {
 	market := getMarketInfo()
 
@@ -28,6 +29,7 @@ func HandleIndex(c echo.Context) error {
 	return c.Render(http.StatusOK, "index", indexTemplate)
 }
 
+// HandleSeats is the handler for POST /seats
 func HandleSeats(c echo.Context) error {
 	req := c.Request()
 	req.ParseForm()
@@ -55,6 +57,7 @@ func HandleSeats(c echo.Context) error {
 	return c.Render(http.StatusOK, "seats", seatTemplate)
 }
 
+// HandleGetMovies is the handler for GET /movies
 func HandleGetMovies(c echo.Context) error {
 
 	day := c.QueryParam("day")
@@ -75,6 +78,7 @@ func HandleGetMovies(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 }
 
+// HandleGetSingleMovie is the handler for GET /movies/:film-slug
 func HandleGetSingleMovie(c echo.Context) error {
 
 	filmSlug := c.Param("film-slug")

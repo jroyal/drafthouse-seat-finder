@@ -1,11 +1,17 @@
 package main
 
 import (
+	"flag"
 	"html/template"
 	"io"
 
 	"github.com/jroyal/drafthouse-seat-finder/drafthouse"
 	"github.com/labstack/echo"
+)
+
+// Command Line Options
+var (
+	local = flag.Bool("local", false, "Run the server only on localhost")
 )
 
 type Template struct {
@@ -17,6 +23,7 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 }
 
 func main() {
+	flag.Parse()
 	e := echo.New()
 
 	t := &Template{
@@ -24,11 +31,18 @@ func main() {
 	}
 	e.Renderer = t
 
+	// These are the two main routes used by the UI
 	e.GET("/", drafthouse.HandleIndex)
-
 	e.POST("/seats", drafthouse.HandleSeats)
 
+	// These are fun convienience routes that I used for testing. Eventually I might clean these out
 	e.GET("/movies", drafthouse.HandleGetMovies)
 	e.GET("/movies/:film-slug", drafthouse.HandleGetSingleMovie)
-	e.Logger.Fatal(e.Start(":8080"))
+
+	if *local {
+		e.Logger.Fatal(e.Start("localhost:8080"))
+	} else {
+		e.Logger.Fatal(e.Start(":8080"))
+	}
+
 }
