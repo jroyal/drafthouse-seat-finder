@@ -1,7 +1,7 @@
 package drafthouse
 
-type ResponseMovies struct {
-	Movies []string `json:"movies"`
+type ResponseFilms struct {
+	Films []SimpleFilm `json:"films"`
 }
 
 type ResponseMovieTimes struct {

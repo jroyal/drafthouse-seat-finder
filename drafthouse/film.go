@@ -12,8 +12,8 @@ type Film struct {
 }
 
 type SimpleFilm struct {
-	FilmName string
-	FilmSlug string
+	FilmName string `json:"FilmName"`
+	FilmSlug string `json:"FilmSlug"`
 }
 
 type SimpleFilms []SimpleFilm

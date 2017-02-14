@@ -36,7 +36,7 @@ func main() {
 	e.POST("/seats", drafthouse.HandleSeats)
 
 	// These are fun convienience routes that I used for testing. Eventually I might clean these out
-	e.GET("/movies", drafthouse.HandleGetMovies)
+	e.GET("/films", drafthouse.HandleGetFilms)
 	e.GET("/movies/:film-slug", drafthouse.HandleGetSingleMovie)
 
 	if *local {

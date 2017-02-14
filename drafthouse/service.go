@@ -57,14 +57,14 @@ func HandleSeats(c echo.Context) error {
 	return c.Render(http.StatusOK, "seats", seatTemplate)
 }
 
-// HandleGetMovies is the handler for GET /movies
-func HandleGetMovies(c echo.Context) error {
+// HandleGetFilms is the handler for GET /films
+func HandleGetFilms(c echo.Context) error {
 
 	day := c.QueryParam("day")
 	if day == "" {
-		day = time.Now().Format(apiFormat)
+		day = time.Now().Format(dateFormat)
 	}
-	dayFilter, _ := time.Parse(apiFormat, day)
+	dayFilter, _ := time.Parse(dateFormat, day)
 	cinemaFilter := c.QueryParam("cinema")
 	log.WithFields(log.Fields{
 		"path":      c.Path(),
@@ -74,7 +74,7 @@ func HandleGetMovies(c echo.Context) error {
 		"method":    c.Request().Method,
 	}).Info("Request Received")
 	market := getMarketInfo()
-	response := ResponseMovies{market.GetFilmNames(dayFilter, cinemaFilter)}
+	response := ResponseFilms{market.GetSimpleFilms(dayFilter, cinemaFilter)}
 	return c.JSON(http.StatusOK, response)
 }
 

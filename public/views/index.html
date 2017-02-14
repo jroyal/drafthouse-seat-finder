@@ -33,7 +33,7 @@
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">Date</label>
                 <div class="col-sm-8">
-                    <select name="date" class="form-control">
+                    <select name="date" id="datePicker" class="form-control" onchange="dateChange()">
                         {{range .Dates}}
                             <option value={{.}}>{{.}}</option>
                         {{end}}
@@ -43,7 +43,7 @@
               <div class="form-group">
                 <label class="col-sm-2 control-label">Film</label>
                 <div class="col-sm-8">
-                    <select name="film" class="form-control">
+                    <select name="film" id="filmPicker" class="form-control">
                         {{range .Films}}
                             <option value={{.FilmSlug}}>{{.FilmName}}</option>
                         {{end}}
@@ -88,6 +88,25 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script>
+    function dateChange() {
+        $.get(
+            "/films",
+            {"day": document.getElementById("datePicker").value },
+            function(data) {
+                $("#filmPicker").empty();
+                $(data.films).each(function () {
+                    // Create option
+                    var $option = $("<option />");
+                    // Add value and text to option
+                    $option.attr("value", this.FilmSlug).text(this.FilmName);
+                    // Add option to drop down list
+                    $("#filmPicker").append($option);
+                });
+            }
+        );
+    }
+    </script>
   </body>
 </html>
 {{end}}
