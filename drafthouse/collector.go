@@ -2,6 +2,7 @@ package drafthouse
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -37,4 +38,16 @@ func getMarketInfo() Market {
 	}
 
 	return market.Market
+}
+
+func getFilmSeats(film FilmSession) SeatResponse {
+	var seatResponse SeatResponse
+	log.WithFields(log.Fields{
+		"filmName":    film.FilmName,
+		"sessionTime": film.SessionTime,
+		"sessionID":   film.SessionID,
+	}).Info("Getting Film Information")
+	url := fmt.Sprintf("https://drafthouse.com/s/vista/wsVistaWebClient/RESTData.svc/cinemas/%s/sessions/%s/seat-plan", film.CinemaID, film.SessionID)
+	getJson(url, &seatResponse)
+	return seatResponse
 }
