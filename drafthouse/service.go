@@ -50,8 +50,10 @@ func HandleSeats(c echo.Context) error {
 	}).Info("Request Recieved")
 
 	market := getMarketInfo()
+	filmSessions := market.GetFilmSessions(film, dayFilter, cinemaFilter)
+	loadFilmSeats(filmSessions)
 	seatTemplate := SeatPickerTemplate{
-		Films: market.GetFilmSessions(film, dayFilter, cinemaFilter),
+		Films: filmSessions,
 	}
 
 	return c.Render(http.StatusOK, "seats", seatTemplate)

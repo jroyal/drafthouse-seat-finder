@@ -36,6 +36,7 @@ type FilmSession struct {
 	FilmName    string
 	SessionTime string
 	SessionID   string
+	SeatChart   SeatChart
 }
 
 type Series struct {

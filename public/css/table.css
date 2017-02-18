@@ -1,0 +1,36 @@
+table {
+    border: 1px solid black;
+    background-color: #262626;
+}
+
+td {
+    border-radius: 2px;
+    width: 25px;
+    height: 25px;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: 50% !important;
+    background-repeat-x: no-repeat;
+    background-repeat-y: no-repeat;
+    background-attachment: initial;
+    background-origin: initial;
+    background-clip: initial;
+    background-color: transparent;
+    color: black;
+}
+
+td.taken {
+    background-image: url("../images/not_open_seat.svg");
+}
+
+td.handicap {
+    background-image: url("../images/wheelchair.svg");
+}
+
+td.open {
+    background-image: url("../images/open_seat.svg");
+}
+
+td.convertable {
+    background-image: url("../images/convertable.svg");
+}
