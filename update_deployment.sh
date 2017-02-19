@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 rm -rf drafthouse-seat-finder
+git pull
 CGO_ENABLED=0 go build -a --installsuffix cgo --ldflags="-s" .
 docker build -t jroyal/drafthouse-seat-finder .
 docker stop drafthouse-seat-finder
