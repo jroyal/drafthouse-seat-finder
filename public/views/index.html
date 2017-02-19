@@ -31,8 +31,8 @@
         <div class="row">
             <form class="form-horizontal" action="/seats" method="post">
               <div class="form-group">
-                <label for="inputEmail3" class="col-sm-2 control-label">Date</label>
-                <div class="col-sm-8">
+                <label class="col-md-1 col-md-offset-2 col-sm-2 col-xs-2 hidden-xs control-label">Date</label>
+                <div class="col-md-7 col-md-offset-0 col-sm-8 col-xs-10 col-xs-offset-1">
                     <select name="date" id="datePicker" class="form-control" onchange="dateChange()">
                         {{range .Dates}}
                             <option value={{.}}>{{.}}</option>
@@ -41,8 +41,8 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-2 control-label">Film</label>
-                <div class="col-sm-8">
+                <label class="col-md-1 col-md-offset-2 col-sm-2 col-sm-offset-1 col-xs-2 hidden-xs control-label">Film</label>
+                <div class="col-md-7 col-md-offset-0 col-sm-8 col-xs-10 col-xs-offset-1">
                     <select name="film" id="filmPicker" class="form-control">
                         {{range .Films}}
                             <option value={{.FilmSlug}}>{{.FilmName}}</option>
@@ -50,10 +50,10 @@
                     </select>
                 </div>
               </div>
-              <div class="form-group form-group-lg">
-                <label class="col-sm-2 control-label">Theaters</label>
+              <div class="form-group">
+                <label class="col-md-1 col-md-offset-2 col-sm-2 col-xs-2 col-xs-offset-1 hidden-xs control-label">Theaters</label>
                 <fieldset>
-                    <div class="col-sm-8">
+                    <div class="col-md-offset-0 col-sm-7 col-xs-10 col-xs-offset-1">
                     {{range .Cinemas}}
                       <div class="checkbox">
                               <label>
@@ -65,22 +65,11 @@
                 </fieldset>
               </div>
               <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-8">
-                  <button type="submit" class="btn btn-default">Get Seat Information</button>
+                <div class="col-md-4 col-md-offset-4 col-sm-offset-2 col-sm-8 col-xs-10 col-xs-offset-1">
+                  <button type="submit" class="btn btn-primary btn-block">Get Seat Information</button>
                 </div>
               </div>
             </form>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-
-
-
-
-                <div class="embed-responsive embed-responsive-16by9">
-                  <!-- <iframe class="embed-responsive-item" src="https://drafthouse.com/tickets/seatpreview/75780/0007"></iframe> -->
-                </div>
-            </div>
         </div>
     </div>
 
