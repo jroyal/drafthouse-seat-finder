@@ -100,7 +100,7 @@ func NewSeatChart(res SeatResponse) SeatChart {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("recovered from panic")
-			fmt.Println(res)
+			fmt.Println(res.SeatLayoutData)
 		}
 	}()
 	columnCount := res.SeatLayoutData.Areas[0].ColumnCount
