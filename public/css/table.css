@@ -10,8 +10,7 @@ td {
     background-position-x: center;
     background-position-y: center;
     background-size: 50% !important;
-    background-repeat-x: no-repeat;
-    background-repeat-y: no-repeat;
+    background-repeat: no-repeat;
     background-attachment: initial;
     background-origin: initial;
     background-clip: initial;
