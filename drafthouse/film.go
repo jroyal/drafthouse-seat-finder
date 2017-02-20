@@ -34,6 +34,7 @@ type FilmSession struct {
 	CinemaID    string
 	CinemaName  string
 	FilmName    string
+	FilmSlug    string
 	SessionTime string
 	SessionID   string
 	SeatChart   SeatChart
@@ -82,6 +83,7 @@ func (f *Film) GetFilmSessions() []FilmSession {
 			for _, session := range format.Sessions {
 				filmSessions = append(filmSessions, FilmSession{
 					FilmName:    f.FilmName,
+					FilmSlug:    f.FilmSlug,
 					SessionTime: session.SessionTime,
 					SessionID:   session.SessionID,
 				})
