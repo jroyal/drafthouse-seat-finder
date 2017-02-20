@@ -32,12 +32,14 @@
         <div class="row">
             {{range .Films}}
             <div class="col-md-4" style="padding-bottom:25px">
-                <h6 class="text-center">
-                    {{.CinemaName}} {{.SessionTime}}<br>
-                    <small>{{.FilmName}}</small>
-                </h6>
+                <a href="https://drafthouse.com/austin/tickets/{{.FilmSlug}}/tickets/{{.CinemaID}}_{{.SessionID}}">
+                    <h6 class="text-center">
+                        {{.CinemaName}} {{.SessionTime}}<br>
+                        <small>{{.FilmName}}</small>
+                    </h6>
+                </a>
                 <div class="center-block">
-                    <table>
+                    <table class="center-block">
                         {{range .SeatChart.Charts}}
                         <tr>
                             {{range .}}
