@@ -32,8 +32,10 @@
         <div class="row">
             {{range .Films}}
             <div class="col-md-4" style="padding-bottom:25px">
-                <!-- <p class="lead center-block"></p> -->
-                <h6 class="text-center">{{.CinemaName}} {{.SessionTime}}<br><small>{{.FilmName}}</small></h6>
+                <h6 class="text-center">
+                    {{.CinemaName}} {{.SessionTime}}<br>
+                    <small>{{.FilmName}}</small>
+                </h6>
                 <div class="center-block">
                     <table>
                         {{range .SeatChart.Charts}}
