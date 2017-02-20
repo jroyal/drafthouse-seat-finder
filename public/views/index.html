@@ -53,20 +53,23 @@
               </div>
               <div class="form-group">
                 <label class="col-md-1 col-md-offset-2 col-sm-2 col-xs-2 col-xs-offset-1 hidden-xs control-label">Theaters</label>
-                <fieldset>
                     <div class="col-md-offset-0 col-sm-7 col-xs-10 col-xs-offset-1">
                     {{range .Cinemas}}
-                      <div class="checkbox">
-                              <label>
-                                <input type="checkbox" name="cinemas" value={{.CinemaSlug}} checked> {{.CinemaName}}
-                              </label>
-                      </div>
+                        <input type="checkbox" name="cinemas" id={{.CinemaSlug}} value={{.CinemaSlug}} autocomplete="off" checked />
+                        <div class="btn-group btn-group-justified col-md-12 col-xs-12" style="padding-bottom:5px">
+                            <label for={{.CinemaSlug}} class="btn btn-default">
+                                <span class="glyphicon glyphicon-ok"></span>
+                                <span> </span>
+                            </label>
+                            <label for={{.CinemaSlug}} class="btn btn-default active">
+                                {{.CinemaName}}
+                            </label>
+                        </div>
                       {{end}}
                     </div>
-                </fieldset>
               </div>
               <div class="form-group">
-                <div class="col-md-4 col-md-offset-4 col-sm-offset-2 col-sm-8 col-xs-10 col-xs-offset-1">
+                <div class="col-md-5 col-md-offset-4 col-sm-offset-2 col-sm-8 col-xs-10 col-xs-offset-1">
                   <button type="submit" class="btn btn-primary btn-block">Get Seat Information</button>
                 </div>
               </div>
