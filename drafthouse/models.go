@@ -13,11 +13,13 @@ type MarketResponse struct {
 }
 
 type IndexTemplate struct {
+	BaseUrl string
 	Dates   []string
 	Films   []SimpleFilm
 	Cinemas []SimpleCinema
 }
 
 type SeatPickerTemplate struct {
-	Films []FilmSession
+	BaseUrl string
+	Films   []FilmSession
 }
