@@ -25,14 +25,14 @@
     <div class="container-fluid">
         <div class="row">
             <div class="page-header col-sm-8 col-sm-offset-2 text-center">
-                <a href="/" class="header-link">
+                <a href="{{.BaseUrl}}/" class="header-link">
                     <h1>Drafthouse Seat Finder</h1>
                     <p class="lead">For when you are too lazy to click through them all</p>
                 </a>
             </div>
         </div>
         <div class="row">
-            <form class="form-horizontal" action="/seats" method="post">
+            <form class="form-horizontal" action="{{.BaseUrl}}/seats" method="post">
               <div class="form-group">
                 <label class="col-md-1 col-md-offset-2 col-sm-2 col-xs-2 hidden-xs control-label">Date</label>
                 <div class="col-md-7 col-md-offset-0 col-sm-8 col-xs-10 col-xs-offset-1">
@@ -88,7 +88,7 @@
     <script>
     function dateChange() {
         $.get(
-            "/films",
+            "{{.BaseUrl}}/films",
             {"day": document.getElementById("datePicker").value },
             function(data) {
                 $("#filmPicker").empty();

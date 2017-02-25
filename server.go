@@ -2,8 +2,10 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"html/template"
 	"io"
+	"strings"
 
 	"github.com/jroyal/drafthouse-seat-finder/drafthouse"
 	"github.com/labstack/echo"
@@ -12,7 +14,8 @@ import (
 
 // Command Line Options
 var (
-	local = flag.Bool("local", false, "Run the server only on localhost")
+	local   = flag.Bool("local", false, "Run the server only on localhost")
+	urlBase = flag.String("urlBase", "", "For reverse proxy support")
 )
 
 func init() {
@@ -37,13 +40,25 @@ func main() {
 	}
 	e.Renderer = t
 
+	base := strings.Trim(*urlBase, "/")
+	if base != "" {
+		base = "/" + base
+	}
+
+	e.Use(func(h echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Set("baseUrl", base)
+			return h(c)
+		}
+	})
+
 	// These are the two main routes used by the UI
-	e.GET("/", drafthouse.HandleIndex)
-	e.POST("/seats", drafthouse.HandleSeats)
+	e.GET(fmt.Sprintf("%s/", base), drafthouse.HandleIndex)
+	e.POST(fmt.Sprintf("%s/seats", base), drafthouse.HandleSeats)
 
 	// These are fun convienience routes that I used for testing. Eventually I might clean these out
-	e.GET("/films", drafthouse.HandleGetFilms)
-	e.GET("/movies/:film-slug", drafthouse.HandleGetSingleMovie)
+	e.GET(fmt.Sprintf("%s/films", base), drafthouse.HandleGetFilms)
+	e.GET(fmt.Sprintf("%s/movies/:film-slug", base), drafthouse.HandleGetSingleMovie)
 
 	if *local {
 		e.Logger.Fatal(e.Start("localhost:8080"))
