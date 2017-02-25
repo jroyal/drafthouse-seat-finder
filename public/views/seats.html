@@ -31,9 +31,9 @@
                 </a>
             </div>
         </div>
-        <div class="row">
+        <div class="row row-flex row-flex-wrap">
             {{range .Films}}
-            <div class="col-md-4" style="padding-bottom:25px">
+            <div class="col-md-4 flex-col" style="padding-bottom:25px">
                 <a href="https://drafthouse.com/austin/tickets/{{.FilmSlug}}/tickets/{{.CinemaID}}_{{.SessionID}}">
                     <h6 class="text-center">
                         {{.CinemaName}} {{.SessionTime}}<br>
