@@ -33,7 +33,6 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 func main() {
 	flag.Parse()
 	e := echo.New()
-	e.Static("/", "public")
 
 	t := &Template{
 		templates: template.Must(template.ParseGlob("public/views/*.html")),
@@ -41,6 +40,7 @@ func main() {
 	e.Renderer = t
 
 	base := strings.Trim(*urlBase, "/")
+	index := "/" + base
 	if base != "" {
 		base = "/" + base
 	}
@@ -48,12 +48,15 @@ func main() {
 	e.Use(func(h echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			c.Set("baseUrl", base)
+			c.Set("indexUrl", index)
 			return h(c)
 		}
 	})
 
+	e.Static("/", "public")
+
 	// These are the two main routes used by the UI
-	e.GET(fmt.Sprintf("%s/", base), drafthouse.HandleIndex)
+	e.GET(fmt.Sprintf("%s", index), drafthouse.HandleIndex)
 	e.POST(fmt.Sprintf("%s/seats", base), drafthouse.HandleSeats)
 
 	// These are fun convienience routes that I used for testing. Eventually I might clean these out
