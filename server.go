@@ -53,7 +53,7 @@ func main() {
 		}
 	})
 
-	e.Static("/", "public")
+	e.Static(fmt.Sprintf("%s", index), "public")
 
 	// These are the two main routes used by the UI
 	e.GET(fmt.Sprintf("%s", index), drafthouse.HandleIndex)
