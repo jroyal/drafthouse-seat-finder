@@ -16,10 +16,11 @@ func HandleIndex(c echo.Context) error {
 	dayFilter, _ := time.Parse(apiFormat, time.Now().Format(apiFormat))
 	cinemaFilter := ""
 	indexTemplate := IndexTemplate{
-		BaseUrl: c.Get("baseUrl").(string),
-		Dates:   market.GetDates(),
-		Films:   market.GetSimpleFilms(dayFilter, cinemaFilter),
-		Cinemas: market.GetCinemas(),
+		BaseUrl:  c.Get("baseUrl").(string),
+		IndexUrl: c.Get("indexUrl").(string),
+		Dates:    market.GetDates(),
+		Films:    market.GetSimpleFilms(dayFilter, cinemaFilter),
+		Cinemas:  market.GetCinemas(),
 	}
 	log.WithFields(log.Fields{
 		"path":   c.Path(),
@@ -54,8 +55,9 @@ func HandleSeats(c echo.Context) error {
 	filmSessions := market.GetFilmSessions(film, dayFilter, cinemaFilter)
 	loadFilmSeats(filmSessions)
 	seatTemplate := SeatPickerTemplate{
-		BaseUrl: c.Get("baseUrl").(string),
-		Films:   filmSessions,
+		BaseUrl:  c.Get("baseUrl").(string),
+		IndexUrl: c.Get("indexUrl").(string),
+		Films:    filmSessions,
 	}
 
 	return c.Render(http.StatusOK, "seats", seatTemplate)
