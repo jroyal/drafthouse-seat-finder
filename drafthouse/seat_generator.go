@@ -90,8 +90,14 @@ func (s *SeatChart) fillEmptySpots() {
 	}
 }
 
+func (s *SeatChart) addScreen() {
+	s.Charts[0] = []template.HTML{
+		template.HTML(fmt.Sprintf("<td colspan=%d class=\"screen\"></td>", s.width)),
+	}
+}
+
 func setValue(seatChart *SeatChart, drafthouseRow, drafthouseColumn int, val template.HTML) {
-	realRow := seatChart.height - drafthouseRow - 1
+	realRow := seatChart.height - drafthouseRow - 2
 	realCol := seatChart.width - drafthouseColumn - 1
 	seatChart.Charts[realRow][realCol] = val
 }
@@ -104,7 +110,9 @@ func NewSeatChart(res SeatResponse) SeatChart {
 		}
 	}()
 	columnCount := res.SeatLayoutData.Areas[0].ColumnCount
-	rowCount := res.SeatLayoutData.Areas[0].RowCount
+
+	// Add 3 rows. 2 for the front one for the back
+	rowCount := res.SeatLayoutData.Areas[0].RowCount + 3
 	chart := make([][]template.HTML, rowCount)
 	for i := range chart {
 		chart[i] = make([]template.HTML, columnCount)
@@ -135,6 +143,7 @@ func NewSeatChart(res SeatResponse) SeatChart {
 	}
 
 	seatChart.fillEmptySpots()
+	seatChart.addScreen()
 	return seatChart
 }
 

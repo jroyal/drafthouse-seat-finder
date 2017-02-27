@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"html/template"
 	"io"
@@ -9,11 +8,13 @@ import (
 
 	"github.com/jroyal/drafthouse-seat-finder/drafthouse"
 	"github.com/labstack/echo"
+	"github.com/namsral/flag"
 	log "github.com/sirupsen/logrus"
 )
 
 // Command Line Options
 var (
+	port    = flag.String("port", "8080", "Port to run the server on")
 	local   = flag.Bool("local", false, "Run the server only on localhost")
 	urlBase = flag.String("urlBase", "", "For reverse proxy support")
 )
@@ -64,9 +65,9 @@ func main() {
 	e.GET(fmt.Sprintf("%s/movies/:film-slug", base), drafthouse.HandleGetSingleMovie)
 
 	if *local {
-		e.Logger.Fatal(e.Start("localhost:8080"))
+		e.Logger.Fatal(e.Start(fmt.Sprintf("localhost:%s", *port)))
 	} else {
-		e.Logger.Fatal(e.Start(":8080"))
+		e.Logger.Fatal(e.Start(fmt.Sprintf(":%s", *port)))
 	}
 
 }
