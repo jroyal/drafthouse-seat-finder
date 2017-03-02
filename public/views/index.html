@@ -28,38 +28,26 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="page-header col-sm-8 col-sm-offset-2 text-center">
-                <a href="{{.IndexUrl}}" class="header-link">
-                    <h1>Drafthouse Seat Finder</h1>
-                    <p class="lead">For when you are too lazy to click through them all</p>
-                </a>
-            </div>
+            {{template "header" .}}
         </div>
         <div class="row">
-            <form class="form-horizontal" action="{{.BaseUrl}}/seats" method="post">
-                <div class="form-group">
-                    <label class="col-md-1 col-md-offset-2 col-sm-2 col-xs-2 hidden-xs control-label">Date</label>
-                    <div class="col-md-7 col-md-offset-0 col-sm-8 col-xs-10 col-xs-offset-1">
+            <div class="col-md-6 col-md-offset-3 col-xs-10 col-xs-offset-1">
+                <form class="form-horizontal" action="{{.BaseUrl}}/seats" method="post">
+                    <div class="form-group">
                         <select name="date" id="datePicker" class="form-control" onchange="dateChange()">
                         {{range .Dates}}
                             <option value={{.}}>{{.}}</option>
                         {{end}}
-                    </select>
+                        </select>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-1 col-md-offset-2 col-sm-2 col-sm-offset-1 col-xs-2 hidden-xs control-label">Film</label>
-                    <div class="col-md-7 col-md-offset-0 col-sm-8 col-xs-10 col-xs-offset-1">
+                    <div class="form-group">
                         <select name="film" id="filmPicker" class="form-control">
                         {{range .Films}}
                             <option value={{.FilmSlug}}>{{.FilmName}}</option>
                         {{end}}
                     </select>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-1 col-md-offset-2 col-sm-2 col-xs-2 col-xs-offset-1 hidden-xs control-label">Theaters</label>
-                    <div class="col-md-offset-0 col-sm-7 col-xs-10 col-xs-offset-1">
+                    <div class="form-group">
                         {{range .Cinemas}}
                         <input type="checkbox" name="cinemas" id={{.CinemaSlug}} value={{.CinemaSlug}} autocomplete="off" checked />
                         <div class="btn-group btn-group-justified col-md-12 col-xs-12" style="padding-bottom:5px">
@@ -73,13 +61,11 @@
                         </div>
                         {{end}}
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-5 col-md-offset-4 col-sm-offset-2 col-sm-8 col-xs-10 col-xs-offset-1">
-                        <button type="submit" class="btn btn-primary btn-block">Get Seat Information</button>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-default btn-block">Get Seat Information</button>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 
