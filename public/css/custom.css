@@ -3,6 +3,10 @@ a.header-link {
     text-decoration: none;
 }
 
+.drafthouse-header {
+    border-bottom: 1px;
+}
+
 table {
     border: 1px solid black;
     background-color: #262626;
@@ -55,59 +59,64 @@ td.convertable {
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
 }
 
 .form-group input[type="checkbox"] {
     display: none;
 }
 
-.form-group input[type="checkbox"] + .btn-group > label span {
+.form-group input[type="checkbox"]+.btn-group>label span {
     width: 20px;
 }
 
-.form-group input[type="checkbox"] + .btn-group > label span:first-child {
-    display: none;
-}
-.form-group input[type="checkbox"] + .btn-group > label span:last-child {
-    display: inline-block;
-}
-
-.form-group input[type="checkbox"]:checked + .btn-group > label span:first-child {
-    display: inline-block;
-}
-.form-group input[type="checkbox"]:checked + .btn-group > label span:last-child {
+.form-group input[type="checkbox"]+.btn-group>label span:first-child {
     display: none;
 }
 
-.row-flex, .row-flex > div[class*='col-'] {
+.form-group input[type="checkbox"]+.btn-group>label span:last-child {
+    display: inline-block;
+}
+
+.form-group input[type="checkbox"]:checked+.btn-group>label span:first-child {
+    display: inline-block;
+}
+
+.form-group input[type="checkbox"]:checked+.btn-group>label span:last-child {
+    display: none;
+}
+
+.row-flex,
+.row-flex>div[class*='col-'] {
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
     display: -webkit-flex;
     display: flex;
-    flex:1 1 auto;
+    flex: 1 1 auto;
 }
 
 .row-flex-wrap {
-	-webkit-flex-flow: row wrap;
+    -webkit-flex-flow: row wrap;
     align-content: flex-start;
-    flex:0;
+    flex: 0;
 }
 
-.row-flex > div[class*='col-'], .container-flex > div[class*='col-'] {
-	 margin:-.2px; /* hack adjust for wrapping */
+.row-flex>div[class*='col-'],
+.container-flex>div[class*='col-'] {
+    margin: -.2px;
+    /* hack adjust for wrapping */
 }
 
-.container-flex > div[class*='col-'] div,.row-flex > div[class*='col-'] div {
-	width:100%;
+.container-flex>div[class*='col-'] div,
+.row-flex>div[class*='col-'] div {
+    width: 100%;
 }
-
 
 .flex-col {
     display: flex;
     display: -webkit-flex;
     flex: 1 100%;
-	flex-flow: column nowrap;
+    flex-flow: column nowrap;
 }
