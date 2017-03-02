@@ -1,7 +1,8 @@
 {{define "index"}}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,8 +10,10 @@
     <title>Drafthouse Seat Finder</title>
 
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+        crossorigin="anonymous">
     <link rel="stylesheet" href="{{.BaseUrl}}/css/custom.css">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -18,8 +21,9 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
-  <body>
+</head>
+
+<body>
 
 
     <div class="container-fluid">
@@ -33,30 +37,30 @@
         </div>
         <div class="row">
             <form class="form-horizontal" action="{{.BaseUrl}}/seats" method="post">
-              <div class="form-group">
-                <label class="col-md-1 col-md-offset-2 col-sm-2 col-xs-2 hidden-xs control-label">Date</label>
-                <div class="col-md-7 col-md-offset-0 col-sm-8 col-xs-10 col-xs-offset-1">
-                    <select name="date" id="datePicker" class="form-control" onchange="dateChange()">
+                <div class="form-group">
+                    <label class="col-md-1 col-md-offset-2 col-sm-2 col-xs-2 hidden-xs control-label">Date</label>
+                    <div class="col-md-7 col-md-offset-0 col-sm-8 col-xs-10 col-xs-offset-1">
+                        <select name="date" id="datePicker" class="form-control" onchange="dateChange()">
                         {{range .Dates}}
                             <option value={{.}}>{{.}}</option>
                         {{end}}
                     </select>
+                    </div>
                 </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-1 col-md-offset-2 col-sm-2 col-sm-offset-1 col-xs-2 hidden-xs control-label">Film</label>
-                <div class="col-md-7 col-md-offset-0 col-sm-8 col-xs-10 col-xs-offset-1">
-                    <select name="film" id="filmPicker" class="form-control">
+                <div class="form-group">
+                    <label class="col-md-1 col-md-offset-2 col-sm-2 col-sm-offset-1 col-xs-2 hidden-xs control-label">Film</label>
+                    <div class="col-md-7 col-md-offset-0 col-sm-8 col-xs-10 col-xs-offset-1">
+                        <select name="film" id="filmPicker" class="form-control">
                         {{range .Films}}
                             <option value={{.FilmSlug}}>{{.FilmName}}</option>
                         {{end}}
                     </select>
+                    </div>
                 </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-1 col-md-offset-2 col-sm-2 col-xs-2 col-xs-offset-1 hidden-xs control-label">Theaters</label>
+                <div class="form-group">
+                    <label class="col-md-1 col-md-offset-2 col-sm-2 col-xs-2 col-xs-offset-1 hidden-xs control-label">Theaters</label>
                     <div class="col-md-offset-0 col-sm-7 col-xs-10 col-xs-offset-1">
-                    {{range .Cinemas}}
+                        {{range .Cinemas}}
                         <input type="checkbox" name="cinemas" id={{.CinemaSlug}} value={{.CinemaSlug}} autocomplete="off" checked />
                         <div class="btn-group btn-group-justified col-md-12 col-xs-12" style="padding-bottom:5px">
                             <label for={{.CinemaSlug}} class="btn btn-default">
@@ -67,14 +71,14 @@
                                 {{.CinemaName}}
                             </label>
                         </div>
-                      {{end}}
+                        {{end}}
                     </div>
-              </div>
-              <div class="form-group">
-                <div class="col-md-5 col-md-offset-4 col-sm-offset-2 col-sm-8 col-xs-10 col-xs-offset-1">
-                  <button type="submit" class="btn btn-primary btn-block">Get Seat Information</button>
                 </div>
-              </div>
+                <div class="form-group">
+                    <div class="col-md-5 col-md-offset-4 col-sm-offset-2 col-sm-8 col-xs-10 col-xs-offset-1">
+                        <button type="submit" class="btn btn-primary btn-block">Get Seat Information</button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
@@ -84,26 +88,29 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
     <script>
-    function dateChange() {
-        $.get(
-            "{{.BaseUrl}}/films",
-            {"day": document.getElementById("datePicker").value },
-            function(data) {
-                $("#filmPicker").empty();
-                $(data.films).each(function () {
-                    // Create option
-                    var $option = $("<option />");
-                    // Add value and text to option
-                    $option.attr("value", this.FilmSlug).text(this.FilmName);
-                    // Add option to drop down list
-                    $("#filmPicker").append($option);
-                });
-            }
-        );
-    }
+        function dateChange() {
+            $.get(
+                "{{.BaseUrl}}/films", {
+                    "day": document.getElementById("datePicker").value
+                },
+                function (data) {
+                    $("#filmPicker").empty();
+                    $(data.films).each(function () {
+                        // Create option
+                        var $option = $("<option />");
+                        // Add value and text to option
+                        $option.attr("value", this.FilmSlug).text(this.FilmName);
+                        // Add option to drop down list
+                        $("#filmPicker").append($option);
+                    });
+                }
+            );
+        }
     </script>
-  </body>
+</body>
+
 </html>
 {{end}}
