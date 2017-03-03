@@ -1,8 +1,10 @@
 package drafthouse
 
 import (
+	"bytes"
 	"fmt"
 	"html/template"
+	"strings"
 	"sync"
 
 	log "github.com/sirupsen/logrus"
@@ -77,59 +79,85 @@ type Position struct {
 	RowIndex    int `json:"RowIndex"`
 }
 
-type SeatChart struct {
-	width  int
-	height int
-	Charts [][]template.HTML
-}
+type Chart [][]string
 
-func (s *SeatChart) fillEmptySpots() {
-	for r := range s.Charts {
-		for c := range s.Charts[r] {
-			if s.Charts[r][c] == "" {
-				s.Charts[r][c] = template.HTML("<td class=\"empty\"></td>")
+const (
+	tableEnd        string = "</table>"
+	rowStart        string = "<tr>"
+	rowEnd          string = "</tr>"
+	emptySpot       string = "<td class=\"empty\"></td>"
+	seatOpen        string = "<td class=\"open\"></td>"
+	seatTaken       string = "<td class=\"taken\"></td>"
+	seatConvertable string = "<td class=\"convertable\"></td>"
+	seatHandicap    string = "<td class=\"handicap\"></td>"
+)
+
+func fillEmptySpots(seatChart Chart) Chart {
+	for r := range seatChart {
+		for c := range seatChart[r] {
+			if seatChart[r][c] == "" {
+				seatChart[r][c] = emptySpot
 			}
 		}
 	}
+	return seatChart
 }
 
-func (s *SeatChart) addScreen() {
-	s.Charts[0] = []template.HTML{
-		template.HTML(fmt.Sprintf("<td colspan=%d class=\"screen\"></td>", s.width)),
+func buildHTMLTable(cinemaName string, chart Chart) template.HTML {
+	var seatChart bytes.Buffer
+	seatChart.WriteString(fmt.Sprintf("<table class=\"center-block cinema-%s\">", strings.Replace(strings.ToLower(cinemaName), " ", "", -1)))
+	for r := range chart {
+		seatChart.WriteString(rowStart)
+		for c := range chart[r] {
+			if chart[r][c] == "" {
+				seatChart.WriteString(emptySpot)
+			} else {
+				seatChart.WriteString(chart[r][c])
+			}
+
+		}
+		seatChart.WriteString(rowEnd)
 	}
+	seatChart.WriteString(tableEnd)
+	return template.HTML(seatChart.String())
 }
 
-func setValue(seatChart *SeatChart, drafthouseRow, drafthouseColumn int, val template.HTML) {
-	realRow := seatChart.height - drafthouseRow - 2
-	realCol := seatChart.width - drafthouseColumn - 1
-	seatChart.Charts[realRow][realCol] = val
+func addScreen(seatChart Chart, width int) Chart {
+	seatChart[0] = []string{
+		fmt.Sprintf("<td colspan=%d class=\"screen\"></td>", width),
+	}
+	return seatChart
 }
 
-func NewSeatChart(res SeatResponse) SeatChart {
+func setValue(seatChart Chart, height, width, drafthouseRow, drafthouseColumn int, val string) Chart {
+	realRow := height - drafthouseRow - 2
+	realCol := width - drafthouseColumn - 1
+	seatChart[realRow][realCol] = val
+	return seatChart
+}
+
+func NewSeatChart(cinemaName string, baseUrl string, res SeatResponse) template.HTML {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("recovered from panic")
 			fmt.Println(res.SeatLayoutData)
 		}
 	}()
-	if res.ResponseCode == 67 {
+
+	if res.ResponseCode == 67 || res.ResponseCode == 1 {
 		log.WithFields(log.Fields{
 			"ErrorDescription": res.ErrorDescription,
 			"Response code":    res.ResponseCode,
 		}).Info("Failed to get seat data")
+		return template.HTML(fmt.Sprintf("<img src=\"%s/images/sold_out.svg\">", baseUrl))
 	}
 	columnCount := res.SeatLayoutData.Areas[0].ColumnCount
 
 	// Add 3 rows. 2 for the front one for the back
 	rowCount := res.SeatLayoutData.Areas[0].RowCount + 3
-	chart := make([][]template.HTML, rowCount)
+	chart := make([][]string, rowCount)
 	for i := range chart {
-		chart[i] = make([]template.HTML, columnCount)
-	}
-	seatChart := SeatChart{
-		Charts: chart,
-		height: rowCount,
-		width:  columnCount,
+		chart[i] = make([]string, columnCount)
 	}
 
 	rows := res.SeatLayoutData.Areas[0].Rows
@@ -139,25 +167,23 @@ func NewSeatChart(res SeatResponse) SeatChart {
 			var val string
 			switch seat.Status {
 			case 0:
-				val = "<td class=\"open\"></td>"
+				val = seatOpen
 			case 1:
-				val = "<td class=\"taken\"></td>"
+				val = seatTaken
 			case 7:
-				val = "<td class=\"convertable\"></td>"
+				val = seatConvertable
 			case 3:
-				val = "<td class=\"handicap\"></td>"
+				val = seatHandicap
 			}
-			setValue(&seatChart, rowNum, colNum, template.HTML(val))
+			chart = setValue(chart, rowCount, columnCount, rowNum, colNum, val)
 		}
 	}
+	chart = addScreen(chart, columnCount)
 
-	seatChart.fillEmptySpots()
-	seatChart.addScreen()
-	return seatChart
+	return buildHTMLTable(cinemaName, chart)
 }
 
-func loadFilmSeats(filmSessions []FilmSession) []SeatChart {
-	var seatCharts []SeatChart
+func loadFilmSeats(filmSessions []FilmSession, baseUrl string) {
 	var wg sync.WaitGroup
 
 	for i := range filmSessions {
@@ -165,11 +191,22 @@ func loadFilmSeats(filmSessions []FilmSession) []SeatChart {
 		filmSession := &filmSessions[i]
 		go func(filmSession *FilmSession) {
 			seatResponse := getFilmSeats(*filmSession)
-			filmSession.SeatChart = NewSeatChart(seatResponse)
+			filmSession.SeatChart = NewSeatChart(filmSession.CinemaName, baseUrl, seatResponse)
 			wg.Done()
 		}(filmSession)
 
 	}
 	wg.Wait()
-	return seatCharts
+}
+
+func sortFilmSessions(filmSessions []FilmSession) map[string][]FilmSession {
+	cinemas := make(map[string][]FilmSession)
+	for _, session := range filmSessions {
+		if filmSlice, ok := cinemas[session.CinemaName]; ok {
+			cinemas[session.CinemaName] = append(filmSlice, session)
+		} else {
+			cinemas[session.CinemaName] = []FilmSession{session}
+		}
+	}
+	return cinemas
 }

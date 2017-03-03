@@ -23,5 +23,5 @@ type IndexTemplate struct {
 type SeatPickerTemplate struct {
 	BaseUrl  string
 	IndexUrl string
-	Films    []FilmSession
+	Cinemas  map[string][]FilmSession
 }

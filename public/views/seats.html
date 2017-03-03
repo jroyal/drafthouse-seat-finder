@@ -30,9 +30,18 @@
         <div class="row">
             {{template "header" . }}
         </div>
-        <div class="row row-flex row-flex-wrap">
-            {{range .Films}}
-            <div class="col-md-4 flex-col" style="padding-bottom:25px">
+
+        {{range .Cinemas}}
+        <div class="row row-flex row-flex-wrap col-md-10 col-md-offset-1">
+            <div class="page-header center-block">
+                {{$currentCinema := index . 0}}
+                <h1 class="text-center">{{$currentCinema.CinemaName}}</h1>
+            </div>
+        </div>
+        <div class="row row-flex row-flex-wrap col-md-10 col-md-offset-1">
+            {{range .}}
+                
+            <div class="col-md-4 flex-col cinema-{{.CinemaName}}" style="padding-bottom:25px">
                 <a href="https://drafthouse.com/austin/tickets/{{.FilmSlug}}/tickets/{{.CinemaID}}_{{.SessionID}}">
                     <h6 class="text-center">
                         {{.CinemaName}} {{.SessionTime}}<br>
@@ -40,17 +49,15 @@
                     </h6>
                 </a>
                 <div class="center-block">
-                    <table class="center-block">
-                        {{range .SeatChart.Charts}}
-                        <tr>
-                            {{range .}} {{.}} {{end}}
-                        </tr>
-                        {{end}}
-                    </table>
+                    {{.SeatChart}}
                 </div>
             </div>
             {{end}}
         </div>
+        {{end}}
+            
+            
+        
     </div>
 
     {{template "footer" .}}
