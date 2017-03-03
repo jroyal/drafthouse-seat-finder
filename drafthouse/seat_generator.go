@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"html/template"
 	"sync"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type SeatResponse struct {
-	ResponseCode   int            `json:"ResponseCode"`
-	SeatLayoutData SeatLayoutData `json:"SeatLayoutData"`
+	ResponseCode     int            `json:"ResponseCode"`
+	SeatLayoutData   SeatLayoutData `json:"SeatLayoutData"`
+	ErrorDescription string         `json:"ErrorDescription"`
 }
 
 type SeatLayoutData struct {
@@ -109,6 +112,12 @@ func NewSeatChart(res SeatResponse) SeatChart {
 			fmt.Println(res.SeatLayoutData)
 		}
 	}()
+	if res.ResponseCode == 67 {
+		log.WithFields(log.Fields{
+			"ErrorDescription": res.ErrorDescription,
+			"Response code":    res.ResponseCode,
+		}).Info("Failed to get seat data")
+	}
 	columnCount := res.SeatLayoutData.Areas[0].ColumnCount
 
 	// Add 3 rows. 2 for the front one for the back
