@@ -1,5 +1,7 @@
 package drafthouse
 
+import "html/template"
+
 type Film struct {
 	FilmID        string   `json:"FilmId"`
 	FilmName      string   `json:"FilmName"`
@@ -37,7 +39,7 @@ type FilmSession struct {
 	FilmSlug    string
 	SessionTime string
 	SessionID   string
-	SeatChart   SeatChart
+	SeatChart   template.HTML
 }
 
 type Series struct {

@@ -53,11 +53,12 @@ func HandleSeats(c echo.Context) error {
 
 	market := getMarketInfo()
 	filmSessions := market.GetFilmSessions(film, dayFilter, cinemaFilter)
-	loadFilmSeats(filmSessions)
+	loadFilmSeats(filmSessions, c.Get("baseUrl").(string))
+	cinemaFilmSessionMap := sortFilmSessions(filmSessions)
 	seatTemplate := SeatPickerTemplate{
 		BaseUrl:  c.Get("baseUrl").(string),
 		IndexUrl: c.Get("indexUrl").(string),
-		Films:    filmSessions,
+		Cinemas:  cinemaFilmSessionMap,
 	}
 
 	return c.Render(http.StatusOK, "seats", seatTemplate)
