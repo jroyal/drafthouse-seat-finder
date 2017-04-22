@@ -47,6 +47,14 @@ func (cache *Cache) Set(key string, data interface{}) {
 	cache.items[key] = item
 }
 
+// SetWithExpiration is a thread-safe way to add new items with a specific ttl
+func (cache *Cache) SetWithExpiration(key string, data interface{}, ttl time.Duration) {
+	cache.mutex.Lock()
+	defer cache.mutex.Unlock()
+	item := newCacheItem(data, ttl)
+	cache.items[key] = item
+}
+
 // Get is a thread-safe way to lookup items
 func (cache *Cache) Get(key string) (data interface{}, found bool) {
 	cache.mutex.Lock()
