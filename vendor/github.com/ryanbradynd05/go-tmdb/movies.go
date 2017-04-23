@@ -67,6 +67,7 @@ type MovieShort struct {
 	PosterPath    string `json:"poster_path"`
 	ReleaseDate   string `json:"release_date"`
 	Title         string
+	Overview      string `json:"overview"`
 	Video         bool
 	VoteAverage   float32 `json:"vote_average"`
 	VoteCount     uint32  `json:"vote_count"`

@@ -14,8 +14,11 @@ type Film struct {
 }
 
 type SimpleFilm struct {
-	FilmName string `json:"FilmName"`
-	FilmSlug string `json:"FilmSlug"`
+	FilmName        string `json:"FilmName"`
+	FilmSlug        string `json:"FilmSlug"`
+	FilmYear        string `json:"FilmYear"`
+	FilmPosterURL   string `json:"FilmPosterURL"`
+	FilmDescription string `json:"FilmDescription"`
 }
 
 type SimpleFilms []SimpleFilm
@@ -33,13 +36,16 @@ func (slice SimpleFilms) Swap(i, j int) {
 }
 
 type FilmSession struct {
-	CinemaID    string
-	CinemaName  string
-	FilmName    string
-	FilmSlug    string
-	SessionTime string
-	SessionID   string
-	SeatChart   template.HTML
+	CinemaID        string
+	CinemaName      string
+	FilmName        string
+	FilmYear        string
+	FilmSlug        string
+	PosterURL       string
+	FilmDescription string
+	SessionTime     string
+	SessionID       string
+	SeatChart       template.HTML
 }
 
 type Series struct {
@@ -85,6 +91,7 @@ func (f *Film) GetFilmSessions() []FilmSession {
 			for _, session := range format.Sessions {
 				filmSessions = append(filmSessions, FilmSession{
 					FilmName:    f.FilmName,
+					FilmYear:    f.FilmYear,
 					FilmSlug:    f.FilmSlug,
 					SessionTime: session.SessionTime,
 					SessionID:   session.SessionID,
