@@ -29,7 +29,7 @@ func (s *DrafthouseService) HandleIndex(c echo.Context) error {
 		BaseUrl:  c.Get("baseUrl").(string),
 		IndexUrl: c.Get("indexUrl").(string),
 		Dates:    market.GetDates(),
-		Films:    market.GetSimpleFilms(dayFilter, cinemaFilter),
+		Films:    market.GetSimpleFilms(dayFilter, s.collector, cinemaFilter, true),
 		Cinemas:  market.GetCinemas(),
 	}
 	log.WithFields(log.Fields{
@@ -91,12 +91,12 @@ func (s *DrafthouseService) HandleGetFilms(c echo.Context) error {
 		"method":    c.Request().Method,
 	}).Info("Request Received")
 	market := s.collector.GetMarketInfo()
-	response := ResponseFilms{market.GetSimpleFilms(dayFilter, cinemaFilter)}
+	response := ResponseFilms{market.GetSimpleFilms(dayFilter, s.collector, cinemaFilter, false)}
 	return c.JSON(http.StatusOK, response)
 }
 
-// HandleGetSingleMovie is the handler for GET /movies/:film-slug
-func (s *DrafthouseService) HandleGetSingleMovie(c echo.Context) error {
+// HandleGetSingleFilm is the handler for GET /film/:film-slug
+func (s *DrafthouseService) HandleGetSingleFilm(c echo.Context) error {
 
 	filmSlug := c.Param("film-slug")
 
@@ -133,5 +133,5 @@ func Service(routes *echo.Echo, collector *Collector, config *DrafthouseServiceC
 
 	// These are fun convienience routes that I used for testing. Eventually I might clean these out
 	routes.GET(fmt.Sprintf("%s/films", config.Base), s.HandleGetFilms)
-	routes.GET(fmt.Sprintf("%s/movies/:film-slug", config.Base), s.HandleGetSingleMovie)
+	routes.GET(fmt.Sprintf("%s/films/:film-slug", config.Base), s.HandleGetSingleFilm)
 }

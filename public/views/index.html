@@ -41,13 +41,13 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <select name="film" id="filmPicker" class="form-control">
+                        <select name="film" id="filmPicker" class="form-control" onchange="filmChange()">
                         {{range .Films}}
                             <option value={{.FilmSlug}}>{{.FilmName}}</option>
                         {{end}}
                     </select>
                     </div>
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         {{range .Cinemas}}
                         <input type="checkbox" name="cinemas" id={{.CinemaSlug}} value={{.CinemaSlug}} autocomplete="off" checked />
                         <div class="btn-group btn-group-justified col-md-12 col-xs-12" style="padding-bottom:5px">
@@ -60,11 +60,22 @@
                             </label>
                         </div>
                         {{end}}
-                    </div>
+                    </div>-->
                     <div class="form-group">
                         <button type="submit" class="btn btn-default btn-block">Get Seat Information</button>
                     </div>
                 </form>
+            </div>
+        </div>
+        <div class= "row movie-info">
+            <div class="col-md-6 col-md-offset-3 col-xs-10 col-xs-offset-1">
+                <div class="col-md-4">
+                    <img id="posterURL" src={{(index .Films 0).FilmPosterURL}} class="img-responsive center-block img-thumbnail" alt="Movie Poster">
+                </div>
+                <div class= "row">
+                    <h4 class="text-center" id="filmTitle">{{(index .Films 0).FilmName}}</h4>
+                    <p class="text-center" id="filmDesc">{{(index .Films 0).FilmDescription}}</p>
+                </div>
             </div>
         </div>
     </div>
@@ -91,6 +102,23 @@
                         $option.attr("value", this.FilmSlug).text(this.FilmName);
                         // Add option to drop down list
                         $("#filmPicker").append($option);
+                    });
+                }
+            );
+        }
+
+        function filmChange() {
+            $.get(
+                "{{.BaseUrl}}/films", {
+                    "day": document.getElementById("datePicker").value
+                },
+                function (data) {
+                    $(data.films).each(function () {
+                        if (this.FilmSlug == document.getElementById("filmPicker").value) {
+                            $("#posterURL").attr("src", this.FilmPosterURL)
+                            $("#filmTitle").text(this.FilmName)
+                            $("#filmDesc").text(this.FilmDescription)
+                        }
                     });
                 }
             );
