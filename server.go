@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"net/http"
 	"strings"
+	"time"
 
 	"github.com/jroyal/drafthouse-seat-finder/drafthouse"
 	"github.com/labstack/echo"
@@ -18,6 +20,8 @@ var (
 	local   = flag.Bool("local", false, "Run the server only on localhost")
 	urlBase = flag.String("urlBase", "", "For reverse proxy support")
 )
+
+var cacheTTL = 300 * time.Second
 
 func init() {
 	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
@@ -54,15 +58,17 @@ func main() {
 		}
 	})
 
-	e.Static(fmt.Sprintf("%s", index), "public")
+	collector := &drafthouse.Collector{
+		Client: http.Client{Timeout: 10 * time.Second},
+		Cache:  drafthouse.NewCache(cacheTTL),
+	}
 
-	// These are the two main routes used by the UI
-	e.GET(fmt.Sprintf("%s", index), drafthouse.HandleIndex)
-	e.POST(fmt.Sprintf("%s/seats", base), drafthouse.HandleSeats)
+	config := &drafthouse.DrafthouseServiceConfig{
+		Index: index,
+		Base:  base,
+	}
 
-	// These are fun convienience routes that I used for testing. Eventually I might clean these out
-	e.GET(fmt.Sprintf("%s/films", base), drafthouse.HandleGetFilms)
-	e.GET(fmt.Sprintf("%s/movies/:film-slug", base), drafthouse.HandleGetSingleMovie)
+	drafthouse.Service(e, collector, config)
 
 	if *local {
 		e.Logger.Fatal(e.Start(fmt.Sprintf("localhost:%s", *port)))
