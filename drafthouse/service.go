@@ -1,6 +1,7 @@
 package drafthouse
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -9,9 +10,18 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+type DrafthouseService struct {
+	collector *Collector
+}
+
+type DrafthouseServiceConfig struct {
+	Index string
+	Base  string
+}
+
 // HandleIndex is the handler for GET /
-func HandleIndex(c echo.Context) error {
-	market := getMarketInfo()
+func (s *DrafthouseService) HandleIndex(c echo.Context) error {
+	market := s.collector.GetMarketInfo()
 
 	dayFilter, _ := time.Parse(apiFormat, time.Now().Format(apiFormat))
 	cinemaFilter := ""
@@ -32,7 +42,7 @@ func HandleIndex(c echo.Context) error {
 }
 
 // HandleSeats is the handler for POST /seats
-func HandleSeats(c echo.Context) error {
+func (s *DrafthouseService) HandleSeats(c echo.Context) error {
 	req := c.Request()
 	req.ParseForm()
 	form := req.Form
@@ -51,9 +61,9 @@ func HandleSeats(c echo.Context) error {
 		"date":    dayFilter,
 	}).Info("Request Recieved")
 
-	market := getMarketInfo()
+	market := s.collector.GetMarketInfo()
 	filmSessions := market.GetFilmSessions(film, dayFilter, cinemaFilter)
-	loadFilmSeats(filmSessions, c.Get("baseUrl").(string))
+	loadFilmSeats(filmSessions, c.Get("baseUrl").(string), s.collector)
 	cinemaFilmSessionMap := sortFilmSessions(filmSessions)
 	seatTemplate := SeatPickerTemplate{
 		BaseUrl:  c.Get("baseUrl").(string),
@@ -65,7 +75,7 @@ func HandleSeats(c echo.Context) error {
 }
 
 // HandleGetFilms is the handler for GET /films
-func HandleGetFilms(c echo.Context) error {
+func (s *DrafthouseService) HandleGetFilms(c echo.Context) error {
 
 	day := c.QueryParam("day")
 	if day == "" {
@@ -80,13 +90,13 @@ func HandleGetFilms(c echo.Context) error {
 		"scheme":    c.Scheme(),
 		"method":    c.Request().Method,
 	}).Info("Request Received")
-	market := getMarketInfo()
+	market := s.collector.GetMarketInfo()
 	response := ResponseFilms{market.GetSimpleFilms(dayFilter, cinemaFilter)}
 	return c.JSON(http.StatusOK, response)
 }
 
 // HandleGetSingleMovie is the handler for GET /movies/:film-slug
-func HandleGetSingleMovie(c echo.Context) error {
+func (s *DrafthouseService) HandleGetSingleMovie(c echo.Context) error {
 
 	filmSlug := c.Param("film-slug")
 
@@ -104,7 +114,24 @@ func HandleGetSingleMovie(c echo.Context) error {
 		"scheme":    c.Scheme(),
 		"method":    c.Request().Method,
 	}).Info("Request Received")
-	market := getMarketInfo()
+	market := s.collector.GetMarketInfo()
 	response := ResponseMovieTimes{market.GetFilmTimes(filmSlug, dayFilter, cinemaFilter)}
 	return c.JSON(http.StatusOK, response)
+}
+
+// Service registers the routes for the drafthouse service
+func Service(routes *echo.Echo, collector *Collector, config *DrafthouseServiceConfig) {
+	s := DrafthouseService{
+		collector: collector,
+	}
+
+	routes.Static(fmt.Sprintf("%s", config.Index), "public")
+
+	// These are the two main routes used by the UI
+	routes.GET(fmt.Sprintf("%s", config.Index), s.HandleIndex)
+	routes.POST(fmt.Sprintf("%s/seats", config.Base), s.HandleSeats)
+
+	// These are fun convienience routes that I used for testing. Eventually I might clean these out
+	routes.GET(fmt.Sprintf("%s/films", config.Base), s.HandleGetFilms)
+	routes.GET(fmt.Sprintf("%s/movies/:film-slug", config.Base), s.HandleGetSingleMovie)
 }

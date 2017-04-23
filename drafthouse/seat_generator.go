@@ -183,14 +183,14 @@ func NewSeatChart(cinemaName string, baseUrl string, res SeatResponse) template.
 	return buildHTMLTable(cinemaName, chart)
 }
 
-func loadFilmSeats(filmSessions []FilmSession, baseUrl string) {
+func loadFilmSeats(filmSessions []FilmSession, baseUrl string, collector *Collector) {
 	var wg sync.WaitGroup
 
 	for i := range filmSessions {
 		wg.Add(1)
 		filmSession := &filmSessions[i]
 		go func(filmSession *FilmSession) {
-			seatResponse := getFilmSeats(*filmSession)
+			seatResponse := collector.GetFilmSeats(*filmSession)
 			filmSession.SeatChart = NewSeatChart(filmSession.CinemaName, baseUrl, seatResponse)
 			wg.Done()
 		}(filmSession)
