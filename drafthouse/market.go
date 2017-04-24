@@ -46,7 +46,7 @@ func (m *Market) GetSimpleFilms(date time.Time, collector *Collector, cinemaFilt
 }
 
 func getFilmMetaData(collector *Collector, film *SimpleFilm) {
-	results := collector.GetFilmMetaData(film.FilmName, film.FilmYear)
+	results := collector.GetFilmMetaData(film)
 	film.FilmPosterURL = results.PosterURL
 	film.FilmDescription = results.Description
 }

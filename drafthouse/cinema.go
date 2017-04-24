@@ -32,6 +32,7 @@ func (c *Cinema) GetFilms() []SimpleFilm {
 			FilmName: film.FilmName,
 			FilmSlug: film.FilmSlug,
 			FilmYear: film.FilmYear,
+			FilmID:   film.FilmID,
 		}
 	}
 	return filmset
