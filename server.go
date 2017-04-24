@@ -11,14 +11,16 @@ import (
 	"github.com/jroyal/drafthouse-seat-finder/drafthouse"
 	"github.com/labstack/echo"
 	"github.com/namsral/flag"
+	tmdb "github.com/ryanbradynd05/go-tmdb"
 	log "github.com/sirupsen/logrus"
 )
 
 // Command Line Options
 var (
-	port    = flag.String("port", "8080", "Port to run the server on")
-	local   = flag.Bool("local", false, "Run the server only on localhost")
-	urlBase = flag.String("urlBase", "", "For reverse proxy support")
+	port       = flag.String("port", "8080", "Port to run the server on")
+	local      = flag.Bool("local", false, "Run the server only on localhost")
+	urlBase    = flag.String("urlBase", "", "For reverse proxy support")
+	tmdbAPIKey = flag.String("tmdbAPIKey", "", "API key needed to talk to TMDB")
 )
 
 var cacheTTL = 300 * time.Second
@@ -59,8 +61,9 @@ func main() {
 	})
 
 	collector := &drafthouse.Collector{
-		Client: http.Client{Timeout: 10 * time.Second},
-		Cache:  drafthouse.NewCache(cacheTTL),
+		Client:     http.Client{Timeout: 10 * time.Second},
+		Cache:      drafthouse.NewCache(cacheTTL),
+		TMDBClient: tmdb.Init(*tmdbAPIKey),
 	}
 
 	config := &drafthouse.DrafthouseServiceConfig{

@@ -17,6 +17,7 @@ type SimpleFilm struct {
 	FilmName        string `json:"FilmName"`
 	FilmSlug        string `json:"FilmSlug"`
 	FilmYear        string `json:"FilmYear"`
+	FilmID          string `json:"FilmID"`
 	FilmPosterURL   string `json:"FilmPosterURL"`
 	FilmDescription string `json:"FilmDescription"`
 }

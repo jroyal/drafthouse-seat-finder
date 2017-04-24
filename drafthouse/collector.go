@@ -3,6 +3,7 @@ package drafthouse
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"regexp"
 	"time"
@@ -12,8 +13,9 @@ import (
 )
 
 type Collector struct {
-	Client http.Client
-	Cache  *Cache
+	Client     http.Client
+	Cache      *Cache
+	TMDBClient *tmdb.TMDb
 }
 
 type MetaDataResults struct {
@@ -60,24 +62,22 @@ func (c *Collector) GetFilmSeats(film FilmSession) SeatResponse {
 	return seatResponse
 }
 
-func (c *Collector) GetFilmMetaData(filmName string, filmYear string) *MetaDataResults {
+func (c *Collector) GetFilmMetaData(film *SimpleFilm) *MetaDataResults {
 	// Things to replace quickly in order to get better answers
 	r := regexp.MustCompile("\\([0-9]{4}\\)|2D|3D|\\(Subtitled\\)|\\(Dubbed\\)")
-	filmName = r.ReplaceAllString(filmName, "")
+	modifiedFilmName := r.ReplaceAllString(film.FilmName, "")
 
-	cacheKey := fmt.Sprintf("film_meta_%s", filmName)
+	cacheKey := fmt.Sprintf("film_meta_%s", modifiedFilmName)
 	if data, exists := c.Cache.Get(cacheKey); exists {
 		return data.(*MetaDataResults)
 	}
 
-	tmdbClient := tmdb.Init("872b1c79febd6e43d7e17f8bffb898ff")
 	log.WithFields(log.Fields{
-		"filmName": filmName,
-		"filmYear": filmYear,
+		"filmName": film.FilmName,
 	}).Info("Getting Film Meta Data")
 	options := map[string]string{}
 
-	results, _ := tmdbClient.SearchMovie(filmName, options)
+	results, _ := c.TMDBClient.SearchMovie(modifiedFilmName, options)
 	metaResults := &MetaDataResults{}
 	if len(results.Results) > 0 {
 		posterBaseURL := "https://image.tmdb.org/t/p/w185"
@@ -85,8 +85,32 @@ func (c *Collector) GetFilmMetaData(filmName string, filmYear string) *MetaDataR
 		metaResults.PosterURL = fmt.Sprintf("%s/%s", posterBaseURL, results.Results[0].PosterPath)
 	} else {
 		// Check the drafthouse for the information
+		results, err := getDrafthouseFilmMeta(film.FilmSlug, film.FilmID)
+		if err != nil {
+			log.Error(err)
+		}
+		metaResults = results
 	}
 	c.Cache.SetWithExpiration(cacheKey, metaResults, 168*time.Hour)
 	// TODO: Handle the error
 	return metaResults
+}
+
+func getDrafthouseFilmMeta(filmSlug string, filmID string) (*MetaDataResults, error) {
+	url := fmt.Sprintf("https://drafthouse.com/ajax/.show-index/%s/1/%s", filmSlug, filmID)
+	resp, _ := http.Get(url)
+	r := regexp.MustCompile("(?s)Pane-content.*<img src=\"//(.*?)\".* <div class=\"Show-description u-fontFamilySerif\">(.*)</div>")
+	responseData, _ := ioutil.ReadAll(resp.Body)
+	matches := r.FindStringSubmatch(string(responseData))
+	if len(matches) != 3 {
+		return nil, fmt.Errorf("Failed to get poster and description for %s from the drafthouse", filmSlug)
+	}
+	posterURL := fmt.Sprintf("https://%s", matches[1])
+	description := matches[2]
+	r = regexp.MustCompile("</div>")
+	description = r.ReplaceAllString(description, "")
+	return &MetaDataResults{
+		PosterURL:   posterURL,
+		Description: description,
+	}, nil
 }

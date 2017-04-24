@@ -47,20 +47,6 @@
                         {{end}}
                     </select>
                     </div>
-                    <!--<div class="form-group">
-                        {{range .Cinemas}}
-                        <input type="checkbox" name="cinemas" id={{.CinemaSlug}} value={{.CinemaSlug}} autocomplete="off" checked />
-                        <div class="btn-group btn-group-justified col-md-12 col-xs-12" style="padding-bottom:5px">
-                            <label for={{.CinemaSlug}} class="btn btn-default">
-                                <span class="glyphicon glyphicon-ok"></span>
-                                <span> </span>
-                            </label>
-                            <label for={{.CinemaSlug}} class="btn btn-default active">
-                                {{.CinemaName}}
-                            </label>
-                        </div>
-                        {{end}}
-                    </div>-->
                     <div class="form-group">
                         <button type="submit" class="btn btn-default btn-block">Get Seat Information</button>
                     </div>
@@ -117,7 +103,7 @@
                         if (this.FilmSlug == document.getElementById("filmPicker").value) {
                             $("#posterURL").attr("src", this.FilmPosterURL)
                             $("#filmTitle").text(this.FilmName)
-                            $("#filmDesc").text(this.FilmDescription)
+                            $("#filmDesc").html(this.FilmDescription)
                         }
                     });
                 }

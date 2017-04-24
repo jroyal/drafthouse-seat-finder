@@ -7,4 +7,4 @@ docker build -t jroyal/drafthouse-seat-finder .
 docker stop drafthouse-seat-finder
 docker container prune -f
 docker image prune -f
-docker run -d --name drafthouse-seat-finder -p 8080:8080 jroyal/drafthouse-seat-finder
+docker run -d --name drafthouse-seat-finder --env-file tmdb_api_key -p 8080:8080 jroyal/drafthouse-seat-finder
