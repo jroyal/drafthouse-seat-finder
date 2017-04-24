@@ -90,6 +90,26 @@ td.convertable {
     background-image: url("../images/github.svg");
 }
 
+.tmdb-link {
+    width: 50px;
+    height: 50px;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: 50% !important;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    background-image: url("../images/tmdb_logo.svg");
+}
+
+.logo-link {
+    display: inline-block;
+}
+
+.logo-links {
+    text-align:center;
+}
+
+
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
