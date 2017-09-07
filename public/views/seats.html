@@ -44,7 +44,7 @@
             {{range .}}
                 
             <div class="col-md-4 flex-col cinema-{{.CinemaName}}" style="padding-bottom:25px">
-                <a href="https://drafthouse.com/austin/tickets/{{.FilmSlug}}/tickets/{{.CinemaID}}_{{.SessionID}}">
+                <a href="https://drafthouse.com/austin/tickets/{{.CinemaID}}/{{.SessionID}}">
                     <h6 class="text-center">
                         {{.CinemaName}} {{.SessionTime}}<br>
                         <small>{{.FilmName}}</small>
