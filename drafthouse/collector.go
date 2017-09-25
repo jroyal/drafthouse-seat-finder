@@ -103,7 +103,10 @@ func getDrafthouseFilmMeta(filmSlug string, filmID string) (*MetaDataResults, er
 	responseData, _ := ioutil.ReadAll(resp.Body)
 	matches := r.FindStringSubmatch(string(responseData))
 	if len(matches) != 3 {
-		return nil, fmt.Errorf("Failed to get poster and description for %s from the drafthouse", filmSlug)
+		return &MetaDataResults{
+			PosterURL:   "",
+			Description: "",
+		}, fmt.Errorf("Failed to get poster and description for %s from the drafthouse", filmSlug)
 	}
 	posterURL := fmt.Sprintf("https://%s", matches[1])
 	description := matches[2]
